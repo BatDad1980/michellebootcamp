@@ -1,0 +1,81 @@
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { USER as MOCK_USER, CURRENT_MODULE, LEARNING_PATHS, PROJECTS, MENTORS, JOBS } from '../data/mockData';
+
+interface DataContextType {
+  userData: typeof MOCK_USER;
+  currentModule: typeof CURRENT_MODULE;
+  learningPaths: typeof LEARNING_PATHS;
+  projects: typeof PROJECTS;
+  mentors: typeof MENTORS;
+  jobs: typeof JOBS;
+  updateModuleProgress: (moduleId: string, increment: number) => void;
+  submitProject: (projectId: string) => void;
+  isAiChatOpen: boolean;
+  openAiChat: (systemPrompt?: string) => void;
+  closeAiChat: () => void;
+  aiChatPrompt: string;
+}
+
+const DataContext = createContext<DataContextType | null>(null);
+
+export function DataProvider({ children }: { children: ReactNode }) {
+  const [userData, setUserData] = useState(() => JSON.parse(localStorage.getItem('userData') || 'null') || MOCK_USER);
+  const [currentModule, setCurrentModule] = useState(() => JSON.parse(localStorage.getItem('currentModule') || 'null') || CURRENT_MODULE);
+  const [learningPaths, setLearningPaths] = useState(() => JSON.parse(localStorage.getItem('learningPaths') || 'null') || LEARNING_PATHS);
+  const [projects, setProjects] = useState(() => JSON.parse(localStorage.getItem('projects') || 'null') || PROJECTS);
+  
+  const [isAiChatOpen, setIsAiChatOpen] = useState(false);
+  const [aiChatPrompt, setAiChatPrompt] = useState('You are DevForge AI, a senior technical mentor and expert developer. You are helping a student in a coding bootcamp. Be encouraging, concise, and provide code examples when helpful.');
+
+  const mentors = MENTORS; 
+  const jobs = JOBS; 
+
+  useEffect(() => { localStorage.setItem('userData', JSON.stringify(userData)); }, [userData]);
+  useEffect(() => { localStorage.setItem('currentModule', JSON.stringify(currentModule)); }, [currentModule]);
+  useEffect(() => { localStorage.setItem('learningPaths', JSON.stringify(learningPaths)); }, [learningPaths]);
+  useEffect(() => { localStorage.setItem('projects', JSON.stringify(projects)); }, [projects]);
+
+  const updateModuleProgress = (moduleId: string, increment: number) => {
+    setLearningPaths((paths: typeof LEARNING_PATHS) => paths.map(p => {
+      if (p.id === moduleId) {
+        const newProgress = Math.min(100, Math.max(0, p.progress + increment));
+        return { ...p, progress: newProgress, status: newProgress === 100 ? 'completed' : p.status };
+      }
+      return p;
+    }));
+    
+    setCurrentModule((c: typeof CURRENT_MODULE) => {
+       if (c.module.toString() === moduleId.replace('m', '')) {
+           return { ...c, progress: Math.min(100, c.progress + increment) };
+       }
+       return c;
+    });
+
+    setUserData((u: typeof MOCK_USER) => ({ ...u, progress: Math.min(100, u.progress + 2) }));
+  };
+
+  const submitProject = (projectId: string) => {
+    setProjects((projs: typeof PROJECTS) => projs.map(p => p.id === projectId ? { ...p, status: 'submitted' } : p));
+  };
+
+  const openAiChat = (systemPrompt?: string) => {
+    if (systemPrompt) setAiChatPrompt(systemPrompt);
+    setIsAiChatOpen(true);
+  };
+  const closeAiChat = () => setIsAiChatOpen(false);
+
+  return (
+    <DataContext.Provider value={{ 
+      userData, currentModule, learningPaths, projects, mentors, jobs, 
+      updateModuleProgress, submitProject, isAiChatOpen, openAiChat, closeAiChat, aiChatPrompt 
+    }}>
+      {children}
+    </DataContext.Provider>
+  );
+}
+
+export function useData() {
+  const context = useContext(DataContext);
+  if (!context) throw new Error('useData must be used within DataProvider');
+  return context;
+}
