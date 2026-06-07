@@ -16,12 +16,12 @@ export default function App() {
 
   const renderView = () => {
     switch(activeTab) {
-      case 'dashboard': return <Dashboard />;
+      case 'dashboard': return <Dashboard onNavigate={setActiveTab} />;
       case 'curriculum': return <Curriculum />;
       case 'projects': return <Projects />;
       case 'mentorship': return <Mentorship />;
       case 'career': return <Career />;
-      default: return <Dashboard />;
+      default: return <Dashboard onNavigate={setActiveTab} />;
     }
   }
 

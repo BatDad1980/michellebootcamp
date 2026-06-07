@@ -2,12 +2,15 @@ import { useData } from '../../context/DataContext';
 import { Target, CheckCircle2, Flame, Award } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
-export default function Dashboard() {
+interface DashboardProps {
+  onNavigate: (tab: string) => void;
+}
+
+export default function Dashboard({ onNavigate }: DashboardProps) {
   const {
     userData: MOCK_USER,
     currentModule: CURRENT_MODULE,
     learningPaths,
-    updateModuleProgress,
     openAiChat,
     resetProgress
   } = useData();
@@ -93,16 +96,16 @@ export default function Dashboard() {
               </div>
               <div className="mt-6 flex gap-3">
                 <button
-                  onClick={() => updateModuleProgress(`m${CURRENT_MODULE.module}`, 20)}
+                  onClick={() => onNavigate('curriculum')}
                   className="bg-sky-500 text-slate-900 px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-sky-400 transition shadow-lg shadow-sky-500/10"
                 >
-                  Resume Lesson
+                  Start Lesson
                 </button>
                 <button
-                  onClick={() => openAiChat('You are DevForge AI, a patient beginner coding mentor. Help Michelle understand the current lesson in plain language and give her one small practice task.')}
+                  onClick={() => openAiChat('You are DevForge AI, a patient beginner coding mentor. Help Michelle understand Module 1: Web Foundations in plain language and give her one small practice task.')}
                   className="bg-slate-800/80 text-slate-300 border border-slate-700 px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-slate-800 transition"
                 >
-                  View Resources
+                  Ask For Help
                 </button>
               </div>
             </div>
@@ -140,6 +143,30 @@ export default function Dashboard() {
             <div className="text-sm text-slate-400 mt-1">Complete Module 1 and submit the Personal Profile Page project.</div>
           </div>
         </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <button
+          onClick={() => onNavigate('curriculum')}
+          className="rounded-2xl border border-sky-500/30 bg-sky-500/10 p-5 text-left transition hover:bg-sky-500/15"
+        >
+          <div className="text-sm font-bold text-sky-300">1. Learn</div>
+          <div className="mt-1 text-sm text-slate-300">Open Module 1 and mark lessons complete.</div>
+        </button>
+        <button
+          onClick={() => onNavigate('projects')}
+          className="rounded-2xl border border-slate-700 bg-[#161B22] p-5 text-left transition hover:bg-slate-800/70"
+        >
+          <div className="text-sm font-bold text-white">2. Build</div>
+          <div className="mt-1 text-sm text-slate-400">Start the Personal Profile Page project.</div>
+        </button>
+        <button
+          onClick={() => openAiChat('Please give Michelle a calm beginner-friendly plan for her first 20 minutes inside this bootcamp.')}
+          className="rounded-2xl border border-slate-700 bg-[#161B22] p-5 text-left transition hover:bg-slate-800/70"
+        >
+          <div className="text-sm font-bold text-white">3. Ask</div>
+          <div className="mt-1 text-sm text-slate-400">Get a simple next-step plan from the mentor.</div>
+        </button>
       </div>
       
     </div>

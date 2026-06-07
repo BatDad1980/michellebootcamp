@@ -3,13 +3,13 @@ import { useData } from '../../context/DataContext';
 import { Lock, CheckCircle, PlayCircle } from 'lucide-react';
 
 export default function Curriculum() {
-  const { learningPaths: LEARNING_PATHS, updateModuleProgress } = useData();
+  const { learningPaths: LEARNING_PATHS, updateModuleProgress, openAiChat } = useData();
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500 max-w-4xl">
       <div>
         <h2 className="text-3xl font-bold text-white tracking-tight">Your Learning Path</h2>
-        <p className="text-slate-400 mt-2">Follow the curriculum step-by-step. Need help? Schedule a session with your mentor.</p>
+        <p className="text-slate-400 mt-2">Start at Module 1. Tap the lesson button when you finish a small step.</p>
       </div>
 
       <div className="space-y-4">
@@ -75,9 +75,15 @@ export default function Curriculum() {
                   )}
 
                   {isInProgress && (
-                     <div className="mt-6">
-                        <button onClick={() => updateModuleProgress(module.id, 20)} className="bg-sky-500 text-slate-900 px-6 py-2 rounded-lg font-bold hover:bg-sky-400 transition shadow-sm shadow-sky-500/20">
-                           Continue Module
+                     <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                        <button onClick={() => updateModuleProgress(module.id, 25)} className="bg-sky-500 text-slate-900 px-6 py-2 rounded-lg font-bold hover:bg-sky-400 transition shadow-sm shadow-sky-500/20">
+                           Mark Next Lesson Done
+                        </button>
+                        <button
+                          onClick={() => openAiChat(`Please explain this beginner lesson in simple terms: ${module.lessons[Math.min(module.lessons.length - 1, Math.floor(module.progress / 25))]}. Give Michelle one tiny practice task.`)}
+                          className="bg-slate-800/80 text-slate-300 border border-slate-700 px-6 py-2 rounded-lg font-semibold hover:bg-slate-800 transition"
+                        >
+                           Explain This Lesson
                         </button>
                      </div>
                   )}
