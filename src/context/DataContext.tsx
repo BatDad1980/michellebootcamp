@@ -10,6 +10,7 @@ interface DataContextType {
   jobs: typeof JOBS;
   updateModuleProgress: (moduleId: string, increment: number) => void;
   submitProject: (projectId: string) => void;
+  resetProgress: () => void;
   isAiChatOpen: boolean;
   openAiChat: (systemPrompt?: string) => void;
   closeAiChat: () => void;
@@ -17,9 +18,13 @@ interface DataContextType {
 }
 
 const DataContext = createContext<DataContextType | null>(null);
+const BOOTCAMP_DATA_VERSION = 'michelle-starter-v3';
 
 function loadStoredValue<T>(key: string, fallback: T): T {
   try {
+    if (localStorage.getItem('bootcampDataVersion') !== BOOTCAMP_DATA_VERSION) {
+      return fallback;
+    }
     const stored = localStorage.getItem(key);
     return stored ? JSON.parse(stored) : fallback;
   } catch {
@@ -40,6 +45,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const mentors = MENTORS; 
   const jobs = JOBS; 
 
+  useEffect(() => { localStorage.setItem('bootcampDataVersion', BOOTCAMP_DATA_VERSION); }, []);
   useEffect(() => { localStorage.setItem('userData', JSON.stringify(userData)); }, [userData]);
   useEffect(() => { localStorage.setItem('currentModule', JSON.stringify(currentModule)); }, [currentModule]);
   useEffect(() => { localStorage.setItem('learningPaths', JSON.stringify(learningPaths)); }, [learningPaths]);
@@ -50,6 +56,14 @@ export function DataProvider({ children }: { children: ReactNode }) {
       if (p.id === moduleId) {
         const newProgress = Math.min(100, Math.max(0, p.progress + increment));
         return { ...p, progress: newProgress, status: newProgress === 100 ? 'completed' : p.status };
+      }
+      const completedModuleNumber = Number(moduleId.replace('m', ''));
+      const nextModuleId = `m${completedModuleNumber + 1}`;
+      if (p.id === nextModuleId) {
+        const currentModuleProgress = paths.find(path => path.id === moduleId)?.progress ?? 0;
+        if (currentModuleProgress + increment >= 100 && p.status === 'locked') {
+          return { ...p, status: 'in_progress' };
+        }
       }
       return p;
     }));
@@ -65,7 +79,16 @@ export function DataProvider({ children }: { children: ReactNode }) {
   };
 
   const submitProject = (projectId: string) => {
-    setProjects((projs: typeof PROJECTS) => projs.map(p => p.id === projectId ? { ...p, status: 'submitted' } : p));
+    setProjects((projs: typeof PROJECTS) => projs.map(p => p.id === projectId && p.status === 'in_progress' ? { ...p, status: 'submitted', grade: 'Pending' } : p));
+    setUserData((u: typeof MOCK_USER) => ({ ...u, progress: Math.min(100, u.progress + 5) }));
+  };
+
+  const resetProgress = () => {
+    localStorage.setItem('bootcampDataVersion', BOOTCAMP_DATA_VERSION);
+    setUserData(MOCK_USER);
+    setCurrentModule(CURRENT_MODULE);
+    setLearningPaths(LEARNING_PATHS);
+    setProjects(PROJECTS);
   };
 
   const openAiChat = (systemPrompt?: string) => {
@@ -77,7 +100,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   return (
     <DataContext.Provider value={{ 
       userData, currentModule, learningPaths, projects, mentors, jobs, 
-      updateModuleProgress, submitProject, isAiChatOpen, openAiChat, closeAiChat, aiChatPrompt 
+      updateModuleProgress, submitProject, resetProgress, isAiChatOpen, openAiChat, closeAiChat, aiChatPrompt 
     }}>
       {children}
     </DataContext.Provider>

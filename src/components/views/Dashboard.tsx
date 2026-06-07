@@ -3,7 +3,18 @@ import { Target, CheckCircle2, Flame, Award } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 export default function Dashboard() {
-  const { userData: MOCK_USER, currentModule: CURRENT_MODULE } = useData();
+  const {
+    userData: MOCK_USER,
+    currentModule: CURRENT_MODULE,
+    learningPaths,
+    updateModuleProgress,
+    openAiChat,
+    resetProgress
+  } = useData();
+
+  const completedLessons = learningPaths.reduce((total, module) => {
+    return total + Math.floor((module.progress / 100) * module.lessons.length);
+  }, 0);
 
   const pieData = [
     { name: 'Completed', value: MOCK_USER.progress },
@@ -12,12 +23,18 @@ export default function Dashboard() {
   const COLORS = ['#0ea5e9', '#1e293b'];
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <div className="flex items-end justify-between">
+    <div className="space-y-6 sm:space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Welcome back, {MOCK_USER.name.split(' ')[0]}.</h1>
-          <p className="text-slate-400 mt-1">You're on track to complete the {MOCK_USER.role.split(' - ')[1]} path by next month.</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">Welcome, {MOCK_USER.name.split(' ')[0]}.</h1>
+          <p className="text-slate-400 mt-1">Start with Module 1. One small lesson at a time.</p>
         </div>
+        <button
+          onClick={resetProgress}
+          className="self-start rounded-lg border border-slate-700 bg-slate-800/60 px-3 py-2 text-xs font-semibold text-slate-300 transition hover:bg-slate-800"
+        >
+          Reset starter progress
+        </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -75,10 +92,16 @@ export default function Dashboard() {
                 <div className="bg-sky-500 h-2 rounded-full" style={{ width: `${CURRENT_MODULE.progress}%` }}></div>
               </div>
               <div className="mt-6 flex gap-3">
-                <button className="bg-sky-500 text-slate-900 px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-sky-400 transition shadow-lg shadow-sky-500/10">
+                <button
+                  onClick={() => updateModuleProgress(`m${CURRENT_MODULE.module}`, 20)}
+                  className="bg-sky-500 text-slate-900 px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-sky-400 transition shadow-lg shadow-sky-500/10"
+                >
                   Resume Lesson
                 </button>
-                <button className="bg-slate-800/80 text-slate-300 border border-slate-700 px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-slate-800 transition">
+                <button
+                  onClick={() => openAiChat('You are DevForge AI, a patient beginner coding mentor. Help Michelle understand the current lesson in plain language and give her one small practice task.')}
+                  className="bg-slate-800/80 text-slate-300 border border-slate-700 px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-slate-800 transition"
+                >
                   View Resources
                 </button>
               </div>
@@ -93,7 +116,7 @@ export default function Dashboard() {
             <Flame size={24} />
           </div>
           <div>
-            <div className="text-2xl font-bold text-white font-mono">14 Days</div>
+            <div className="text-2xl font-bold text-white font-mono">Day 1</div>
             <div className="text-sm text-slate-500 uppercase tracking-widest font-semibold mt-1">Current Streak</div>
           </div>
         </div>
@@ -103,7 +126,7 @@ export default function Dashboard() {
             <CheckCircle2 size={24} />
           </div>
           <div>
-            <div className="text-2xl font-bold text-white font-mono">12</div>
+            <div className="text-2xl font-bold text-white font-mono">{completedLessons}</div>
             <div className="text-sm text-slate-500 uppercase tracking-widest font-semibold mt-1">Lessons Passed</div>
           </div>
         </div>
@@ -113,8 +136,8 @@ export default function Dashboard() {
             <Award size={24} />
           </div>
           <div>
-            <div className="font-bold text-white">Next Milestone: AI Architect Badge</div>
-            <div className="text-sm text-slate-400 mt-1">Complete Module 4 to earn this certification badge.</div>
+            <div className="font-bold text-white">Next Milestone: First Web Page</div>
+            <div className="text-sm text-slate-400 mt-1">Complete Module 1 and submit the Personal Profile Page project.</div>
           </div>
         </div>
       </div>

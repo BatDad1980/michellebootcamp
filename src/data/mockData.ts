@@ -1,9 +1,9 @@
-import { BookOpen, Briefcase, Code, LayoutDashboard, Users, User, Bell, Search, Star, Target, CheckCircle2 } from "lucide-react";
+import { BookOpen, Briefcase, Code, LayoutDashboard, Users } from "lucide-react";
 
 export const USER = {
   name: "Michelle Black",
   role: "Student - Aural-Nexus Developer Track",
-  progress: 68,
+  progress: 0,
   avatarUrl: "https://picsum.photos/seed/Michelle/150/150",
 };
 
@@ -16,79 +16,79 @@ export const NAV_ITEMS = [
 ];
 
 export const CURRENT_MODULE = {
-  title: "Building LLM Agents with LangChain",
-  module: 4,
-  progress: 40,
-  nextLesson: "Memory and Context Window Management",
+  title: "Getting Started: Web Foundations",
+  module: 1,
+  progress: 0,
+  nextLesson: "What the web is: pages, code, and browsers",
 };
 
 export const LEARNING_PATHS = [
   {
     id: "m1",
-    title: "Module 1: Foundations of Machine Learning",
-    description: "Statistics, probability, and classic ML algorithms.",
-    status: "completed",
-    progress: 100,
-    lessons: ["Intro to Pandas", "Linear Regression", "Decision Trees"],
+    title: "Module 1: Web Foundations",
+    description: "HTML, CSS, JavaScript basics, and how websites fit together.",
+    status: "in_progress",
+    progress: 0,
+    lessons: ["What is a website?", "HTML structure", "CSS styling", "JavaScript behavior"],
   },
   {
     id: "m2",
-    title: "Module 2: Deep Learning & Neural Networks",
-    description: "PyTorch, CNNs, RNNs, and backpropagation.",
-    status: "completed",
-    progress: 100,
-    lessons: ["Perceptrons", "PyTorch Basics", "Computer Vision"],
+    title: "Module 2: Build Your First App",
+    description: "Components, state, events, and small React projects.",
+    status: "locked",
+    progress: 0,
+    lessons: ["React components", "Buttons and events", "Saving progress", "Deploying a page"],
   },
   {
     id: "m3",
-    title: "Module 3: NLP & Transformer Architecture",
-    description: "Attention mechanisms, GPT models, and huggingface.",
-    status: "completed",
-    progress: 100,
-    lessons: ["Tokenization", "Self-Attention", "Fine-Tuning BERT"],
+    title: "Module 3: Data and APIs",
+    description: "Fetch data, read JSON, and connect apps to useful services.",
+    status: "locked",
+    progress: 0,
+    lessons: ["What is an API?", "Reading JSON", "Fetching data", "Handling errors"],
   },
   {
     id: "m4",
-    title: "Module 4: Engineering GenAI Apps",
-    description: "LLMs, RAG architecture, and agentic workflows.",
-    status: "in_progress",
-    progress: 40,
-    lessons: ["Prompt Engineering", "Vector Databases", "LangChain Basics"],
+    title: "Module 4: Practical AI Tools",
+    description: "Use AI safely as a study partner, debugger, and project helper.",
+    status: "locked",
+    progress: 0,
+    lessons: ["Prompting basics", "Debugging with AI", "Checking AI output", "Building a helper bot"],
   },
   {
     id: "m5",
-    title: "Module 5: Deployment & MLOps",
-    description: "Serving models, Docker, CI/CD, and monitoring.",
+    title: "Module 5: Portfolio and Career Prep",
+    description: "Finish projects, practice interviews, and prepare a beginner portfolio.",
     status: "locked",
     progress: 0,
-    lessons: ["Dockerizing Models", "AWS Sagemaker", "Model Drift"],
+    lessons: ["Project README", "Portfolio polish", "Mock interview", "Next steps plan"],
   },
 ];
 
 export const PROJECTS = [
   {
     id: "p1",
-    title: "Predictive Housing Model",
-    description: "End-to-end regression model deployed via FAST_API.",
-    status: "graded",
-    grade: "A",
-    dueDate: "2026-01-15",
+    title: "Personal Profile Page",
+    description: "Build a simple profile page with a heading, image, links, and styled sections.",
+    status: "in_progress",
+    grade: null,
+    dueDate: "Start Here",
   },
   {
     id: "p2",
-    title: "Semantic Document Search",
-    description: "RAG system using Pinecone and OpenAI embeddings.",
-    status: "submitted",
-    grade: "Pending",
-    dueDate: "2026-03-10",
+    title: "Interactive To-Do List",
+    description: "Create a small app where a user can add, complete, and remove tasks.",
+    status: "locked",
+    grade: null,
+    dueDate: "After Module 1",
   },
   {
     id: "p3",
-    title: "Autonomous Coding Agent",
-    description: "Build an LLM agent that writes and fixes Python code.",
-    status: "in_progress",
+    title: "Beginner AI Study Helper",
+    description: "Design a safe study assistant prompt and test it against beginner coding questions.",
+    status: "locked",
     grade: null,
-    dueDate: "2026-05-01",
+    dueDate: "After Module 4",
   },
 ];
 

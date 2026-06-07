@@ -2,7 +2,7 @@ import { useData } from '../../context/DataContext';
 import { Calendar, Video, MessageSquare } from 'lucide-react';
 
 export default function Mentorship() {
-  const { mentors: MENTORS } = useData();
+  const { mentors: MENTORS, openAiChat } = useData();
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500 max-w-5xl">
@@ -46,11 +46,17 @@ export default function Mentorship() {
               </div>
 
               <div className="grid grid-cols-2 gap-3 mt-auto">
-                <button className="bg-sky-500 text-slate-900 py-2 rounded-lg text-sm font-bold hover:bg-sky-400 transition flex items-center justify-center shadow-sm shadow-sky-500/20">
+                <button
+                  onClick={() => openAiChat(`You are a friendly coding mentor. Help Michelle prepare for a beginner mentoring session with ${mentor.name}. Ask what she is working on and help her write one clear question to bring to the session.`)}
+                  className="bg-sky-500 text-slate-900 py-2 rounded-lg text-sm font-bold hover:bg-sky-400 transition flex items-center justify-center shadow-sm shadow-sky-500/20"
+                >
                   <Video size={16} className="mr-2" />
-                  Book
+                  Prep
                 </button>
-                <button className="bg-slate-800/80 border border-slate-700 text-slate-300 py-2 rounded-lg text-sm font-semibold hover:bg-slate-800 transition flex items-center justify-center shrink-0">
+                <button
+                  onClick={() => openAiChat(`Please help Michelle write a short, polite message to ${mentor.name} asking for beginner-friendly coding guidance.`)}
+                  className="bg-slate-800/80 border border-slate-700 text-slate-300 py-2 rounded-lg text-sm font-semibold hover:bg-slate-800 transition flex items-center justify-center shrink-0"
+                >
                   <MessageSquare size={16} className="mr-2 text-slate-500" />
                   Message
                 </button>

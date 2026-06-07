@@ -11,7 +11,10 @@ export default function Career() {
           <h2 className="text-3xl font-bold text-white tracking-tight">Career Services</h2>
           <p className="text-slate-400 mt-2">Curated job matches, resume review, and interview prep.</p>
         </div>
-        <button className="bg-slate-800 text-white px-5 py-2.5 rounded-lg text-sm font-bold border border-slate-700 hover:bg-slate-700 transition flex items-center gap-2">
+        <button
+          onClick={() => openAiChat('Please help Michelle create a beginner developer resume outline. Keep it practical and focused on first projects, learning goals, and transferable skills.')}
+          className="bg-slate-800 text-white px-5 py-2.5 rounded-lg text-sm font-bold border border-slate-700 hover:bg-slate-700 transition flex items-center gap-2"
+        >
           <FileCheck size={18} />
           Submit Resume Review
         </button>
@@ -40,8 +43,11 @@ export default function Career() {
                   <div className="inline-flex items-center justify-center w-12 h-12 bg-emerald-500/10 rounded-full border border-emerald-500/20 shrink-0">
                     <span className="text-emerald-400 font-bold text-sm">{job.match}%</span>
                   </div>
-                  <button className="hidden sm:inline-flex items-center text-sm font-bold text-sky-400 hover:text-sky-300">
-                    Apply <ArrowUpRight size={16} className="ml-1" />
+                  <button
+                    onClick={() => openAiChat(`Please help Michelle understand what skills she should build before applying for a ${job.title} role.`)}
+                    className="hidden sm:inline-flex items-center text-sm font-bold text-sky-400 hover:text-sky-300"
+                  >
+                    Plan <ArrowUpRight size={16} className="ml-1" />
                   </button>
                 </div>
               </div>

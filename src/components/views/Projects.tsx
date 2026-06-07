@@ -53,13 +53,18 @@ export default function Projects() {
                   </div>
                 )}
 
-                <button onClick={() => project.status === 'in_progress' ? submitProject(project.id) : undefined} className={cn(
+                <button
+                  onClick={() => project.status === 'in_progress' ? submitProject(project.id) : undefined}
+                  disabled={project.status === 'locked'}
+                  className={cn(
                   "w-full py-2.5 rounded-lg text-sm font-semibold transition text-center",
                   project.status === 'in_progress' 
                     ? "bg-sky-500 text-slate-900 font-bold hover:bg-sky-400 shadow-sm shadow-sky-500/20"
+                    : project.status === 'locked'
+                    ? "bg-slate-900/80 text-slate-600 border border-slate-800 cursor-not-allowed"
                     : "bg-slate-800/80 text-slate-300 border border-slate-700 hover:bg-slate-800"
                 )}>
-                  {project.status === 'in_progress' ? 'Submit Project' : 'View Details'}
+                  {project.status === 'in_progress' ? 'Mark Submitted' : project.status === 'locked' ? 'Locked' : 'View Details'}
                 </button>
               </div>
             </div>
