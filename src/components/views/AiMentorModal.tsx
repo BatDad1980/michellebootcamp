@@ -15,30 +15,52 @@ export default function AiMentorModal() {
   const [isLoading, setIsLoading] = useState(false);
   const chatSessionRef = useRef<any>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const apiKey = process.env.GEMINI_API_KEY;
+
+  const offlineMentorReply = (question: string) => {
+    const lower = question.toLowerCase();
+    if (lower.includes('project') || lower.includes('submit')) {
+      return "Let's keep it simple: describe what you built, what problem it solves, how to run it, and one thing you learned. Then submit it in the Projects tab. If you get stuck, paste the error message and we will break it down one step at a time.";
+    }
+    if (lower.includes('interview')) {
+      return "Mock interview warmup: explain one project you built in three parts: the problem, your technical approach, and the tradeoff you made. Keep it under two minutes, then be ready to answer: 'What would you improve next?'";
+    }
+    if (lower.includes('error') || lower.includes('bug')) {
+      return "Debugging routine: 1. Read the exact error. 2. Find the file and line. 3. Reproduce it once. 4. Change one thing only. 5. Test again. Tiny steps beat panic every time.";
+    }
+    return "I'm in offline mentor mode right now, but I can still help. Pick one small next step: review the current lesson, write down one question, or build for 20 minutes. Momentum matters more than perfect confidence.";
+  };
 
   // Initialize Chat Session when modal opens
   useEffect(() => {
     if (isAiChatOpen) {
       // Create fresh chat when opened, if we don't have one or want to reset
       try {
-        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-        chatSessionRef.current = ai.chats.create({
-          model: 'gemini-2.5-flash',
-          config: {
-            systemInstruction: aiChatPrompt,
-          }
-        });
+        if (apiKey) {
+          const ai = new GoogleGenAI({ apiKey });
+          chatSessionRef.current = ai.chats.create({
+            model: 'gemini-2.5-flash',
+            config: {
+              systemInstruction: aiChatPrompt,
+            }
+          });
+        } else {
+          chatSessionRef.current = null;
+        }
         
         // Initial greeting
         setMessages([{
           role: 'model',
-          text: aiChatPrompt.includes('interview') 
-            ? "Hello! I'm your AI Interviewer. Are you ready to begin your mock technical interview?"
-            : "Hello! I'm your DevForge AI Mentor. How can I help you with your coding journey today?"
+          text: apiKey
+            ? (aiChatPrompt.includes('interview')
+                ? "Hello! I'm your AI Interviewer. Are you ready to begin your mock technical interview?"
+                : "Hello! I'm your DevForge AI Mentor. How can I help you with your coding journey today?")
+            : "Hello! I'm your DevForge Mentor. Live AI is not connected yet, but I can still guide you through lessons, projects, debugging, and interview practice."
         }]);
       } catch (err) {
         console.error("Failed to initialize AI Chat:", err);
-        setMessages([{ role: 'model', text: 'Sorry, the AI service is currently unavailable. Please check your API key setup.' }]);
+        chatSessionRef.current = null;
+        setMessages([{ role: 'model', text: 'Live AI is unavailable right now, but offline mentor mode is still ready.' }]);
       }
     } else {
        // Clean up when closed
@@ -51,7 +73,7 @@ export default function AiMentorModal() {
   }, [messages]);
 
   const handleSend = async () => {
-    if (!input.trim() || !chatSessionRef.current || isLoading) return;
+    if (!input.trim() || isLoading) return;
     
     const userMessage = input.trim();
     setInput('');
@@ -59,12 +81,16 @@ export default function AiMentorModal() {
     setIsLoading(true);
 
     try {
+      if (!chatSessionRef.current) {
+        setMessages(prev => [...prev, { role: 'model', text: offlineMentorReply(userMessage) }]);
+        return;
+      }
       const response = await chatSessionRef.current.sendMessage({ message: userMessage });
-      const responseText = response.text || "I'm sorry, I couldn't process that.";
+      const responseText = response.text || offlineMentorReply(userMessage);
       setMessages(prev => [...prev, { role: 'model', text: responseText }]);
     } catch (err) {
       console.error("Error sending message:", err);
-      setMessages(prev => [...prev, { role: 'model', text: "**Error**: Unable to reach the AI server right now." }]);
+      setMessages(prev => [...prev, { role: 'model', text: offlineMentorReply(userMessage) }]);
     } finally {
       setIsLoading(false);
     }

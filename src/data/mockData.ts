@@ -8,11 +8,11 @@ export const USER = {
 };
 
 export const NAV_ITEMS = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "curriculum", label: "Curriculum", icon: BookOpen },
-  { id: "projects", label: "Projects", icon: Code },
-  { id: "mentorship", label: "Mentorship", icon: Users },
-  { id: "career", label: "Career Services", icon: Briefcase },
+  { id: "dashboard", label: "Dashboard", shortLabel: "Home", icon: LayoutDashboard },
+  { id: "curriculum", label: "Curriculum", shortLabel: "Learn", icon: BookOpen },
+  { id: "projects", label: "Projects", shortLabel: "Build", icon: Code },
+  { id: "mentorship", label: "Mentorship", shortLabel: "Mentor", icon: Users },
+  { id: "career", label: "Career Services", shortLabel: "Career", icon: Briefcase },
 ];
 
 export const CURRENT_MODULE = {

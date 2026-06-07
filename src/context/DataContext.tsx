@@ -18,11 +18,21 @@ interface DataContextType {
 
 const DataContext = createContext<DataContextType | null>(null);
 
+function loadStoredValue<T>(key: string, fallback: T): T {
+  try {
+    const stored = localStorage.getItem(key);
+    return stored ? JSON.parse(stored) : fallback;
+  } catch {
+    localStorage.removeItem(key);
+    return fallback;
+  }
+}
+
 export function DataProvider({ children }: { children: ReactNode }) {
-  const [userData, setUserData] = useState(() => JSON.parse(localStorage.getItem('userData') || 'null') || MOCK_USER);
-  const [currentModule, setCurrentModule] = useState(() => JSON.parse(localStorage.getItem('currentModule') || 'null') || CURRENT_MODULE);
-  const [learningPaths, setLearningPaths] = useState(() => JSON.parse(localStorage.getItem('learningPaths') || 'null') || LEARNING_PATHS);
-  const [projects, setProjects] = useState(() => JSON.parse(localStorage.getItem('projects') || 'null') || PROJECTS);
+  const [userData, setUserData] = useState(() => loadStoredValue('userData', MOCK_USER));
+  const [currentModule, setCurrentModule] = useState(() => loadStoredValue('currentModule', CURRENT_MODULE));
+  const [learningPaths, setLearningPaths] = useState(() => loadStoredValue('learningPaths', LEARNING_PATHS));
+  const [projects, setProjects] = useState(() => loadStoredValue('projects', PROJECTS));
   
   const [isAiChatOpen, setIsAiChatOpen] = useState(false);
   const [aiChatPrompt, setAiChatPrompt] = useState('You are DevForge AI, a senior technical mentor and expert developer. You are helping a student in a coding bootcamp. Be encouraging, concise, and provide code examples when helpful.');
